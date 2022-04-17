@@ -1,0 +1,6 @@
+no:
+MAX(SELECT(timelines[no], [pid] = [_THIS].[pid]))
+
+
+status:
+LOOKUP([_THIS].[no], "timelines", "no", "status")

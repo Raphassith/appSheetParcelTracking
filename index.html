@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบติดตามพัสดุ WinTracking</title>
+    <style>
+        input[type=text],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .box-gray {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px;
+            margin-bottom: 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="box-gray">
+            <label for="pid">หมายเลขพัสดุ</label>
+            <input type="text" id="pid" v-model="pid" placeholder="กรุณากรอกหมายเลขพัสดุที่ต้องการค้นหา">
+            <button @click="getData()">ค้นหา</button>
+        </div>
+        <div class="box-gray">
+            <div>
+                <b>หมายเลขพัสดุ:</b>
+                {{ parcel.pid }}
+            </div>
+            <div>
+                <b>จาก:</b>
+                {{ parcel.from }}
+                <b>ถึง:</b>
+                {{ parcel.to }}
+            </div>
+            <div>
+                <ul>
+                    <li v-for="item in timelines">
+                        วันที่: {{ item.date }}
+                        เวลา: {{ item.time }}
+                        สถานะ: {{ item.status }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@3"></script>
+
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    parcel: { pid: 'กรุณากรอกหมายเลขพัสดุ', from: '-', to: '-' },
+                    timelines: [],
+                    pid: null
+                }
+            },
+            methods: {
+                getData() {
+                    let url = "https://script.google.com/macros/s/AKfycbx7gsAEmviMXTVYWXMVKfAyfeyLFnM7a8C1H8hA8LA6FOMgqY97FpU0AU0F-jJ8cSVe/exec?pid="+this.pid;
+                    fetch(url,{
+                        method:'GET'
+                    })
+                    .then(response => response.json())
+                    .then(data =>{
+                        this.parcel = data.parcel;
+                        this.timelines = data.timelines;
+                    })
+                    .catch(error =>{console.log(error);});
+                }
+            }
+        }).mount('#app')
+    </script>
+
+</body>
+
+</html>
